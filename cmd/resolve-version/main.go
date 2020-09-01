@@ -282,7 +282,7 @@ func parseObject(key string) (release, error) {
 			stage:    match[1],
 			platform: match[2],
 			version:  version,
-			url:      fmt.Sprintf("https://s3.amazonaws.com/%s/node/%s/%s/node-v%s-%s.tar.gz", "heroku-nodebin", match[1], match[2], match[3], match[2]),
+			url:      fmt.Sprintf("https://buildpacks.oss-accelerate.aliyuncs.com/%s/node/%s/%s/node-v%s-%s.tar.gz", "nodejs", match[1], match[2], match[3], match[2]),
 		}, nil
 	}
 
@@ -296,7 +296,7 @@ func parseObject(key string) (release, error) {
 			binary:   "yarn",
 			stage:    match[1],
 			platform: "",
-			url:      fmt.Sprintf("https://s3.amazonaws.com/heroku-nodebin/yarn/release/yarn-v%s.tar.gz", version),
+			url:      fmt.Sprintf("https://buildpacks.oss-accelerate.aliyuncs.com/nodejs/yarn/release/yarn-v%s.tar.gz", version),
 			version:  version,
 		}, nil
 	}
