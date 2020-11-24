@@ -2,6 +2,16 @@
 
 ## main
 
+## v178 (2020-11-17)
+- Add NODE_BUILD_FLAG env var ([#859](https://github.com/heroku/heroku-buildpack-nodejs/pull/859))
+- Add 12.19.1, 14.15.1, and 15.2.1 to inventory for security releases ([#865](https://github.com/heroku/heroku-buildpack-nodejs/pull/865))
+
+## v177 (2020-11-12)
+- add Node 15.2.0 to inventory ([#861](https://github.com/heroku/heroku-buildpack-nodejs/pull/861))
+- Use jq from the stack image ([#854](https://github.com/heroku/heroku-buildpack-nodejs/pull/854))
+- Start testing new `resolve` binaries with inventory lists for Node and Yarn ([#855](https://github.com/heroku/heroku-buildpack-nodejs/pull/855))
+- Follow up to [#855](https://github.com/heroku/heroku-buildpack-nodejs/pull/855) to send captured data with bin/report ([#858](https://github.com/heroku/heroku-buildpack-nodejs/pull/858))
+
 ## v176 (2020-09-10)
 - Only run immutable cache in yarn 2 if caching enabled ([#832](https://github.com/heroku/heroku-buildpack-nodejs/pull/832))
 - Added Hatchet regression tests ([#833](https://github.com/heroku/heroku-buildpack-nodejs/pull/833))
