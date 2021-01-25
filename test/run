@@ -15,8 +15,7 @@ testNpmCi() {
   assertCapturedSuccess
 
    # test logging
-  assertFileContains "feature-use-npm-ci=true" "$log_file"
-  assertFileContains "supports-npm-ci=true" "$log_file"
+  assertFileContains "use-npm-ci=true" "$log_file"
   assertFileContains "npm-install-time=" "$log_file"
   assertFileContains "npm-install-memory=" "$log_file"
 
@@ -35,13 +34,25 @@ testNpmCiFallback() {
 
   assertCapturedSuccess
 
-  # make sure the feature is turned on
-  assertFileContains "feature-use-npm-ci=true" "$log_file"
-  # and detecting that we shouldn't use npm ci
-  assertFileContains "supports-npm-ci=false" "$log_file"
+  # detecting that we shouldn't use npm ci
+  assertFileContains "use-npm-ci=false" "$log_file"
   # and ran "npm install"
   assertFileContains "npm-install-time=" "$log_file"
   assertFileContains "npm-install-memory=" "$log_file"
+}
+
+testNpmCiDisabled() {
+  local cache env_dir log_file
+  cache=$(mktmpdir)
+  env_dir=$(mktmpdir)
+  log_file=$(mktemp)
+
+  echo "true" > $env_dir/USE_NPM_INSTALL
+
+  BUILDPACK_LOG_FILE="$log_file" compile "node-10-npm-ci" $cache $env_dir
+
+  assertFileContains "use-npm-ci=false" "$log_file"
+  assertCapturedSuccess
 }
 
 testFlatmapStream() {
@@ -63,6 +74,11 @@ testBuildScriptBehavior() {
   assertCapturedSuccess
 }
 
+testNgBuildScriptWarning() {
+  compile "ng-build-script"
+  assertCaptured "\"ng build\" detected as build script. We recommend you use \`ng build --prod\` or add \`--prod\` to your build flags."
+}
+
 testBuildScriptYarn() {
   compile "build-script-yarn"
   assertCaptured "Running build (yarn)"
@@ -74,10 +90,23 @@ testBuildFlags() {
   cache=$(mktmpdir)
   env_dir=$(mktmpdir)
 
-  echo "--prod --optimize" > $env_dir/NODE_BUILD_FLAG
+  echo "--prod --optimize" > $env_dir/NODE_BUILD_FLAGS
   compile "build-script" $cache $env_dir
   assertCaptured "Running build"
   assertCaptured "Running with --prod --optimize flags"
+  assertCaptured 'echo build hook message "--prod --optimize"'
+  assertCapturedSuccess
+}
+
+testBuildFlagsWithYarn() {
+  cache=$(mktmpdir)
+  env_dir=$(mktmpdir)
+
+  echo "--prod --optimize" > $env_dir/NODE_BUILD_FLAGS
+  compile "build-script-yarn" $cache $env_dir
+  assertCaptured "Running build"
+  assertCaptured "Running with --prod --optimize flags"
+  assertCaptured "$ echo build hook message '--prod --optimize'"
   assertCapturedSuccess
 }
 
@@ -128,8 +157,8 @@ testYarnRun() {
 testNoVersion() {
   compile "no-version"
   assertCaptured "engines.node (package.json):  unspecified"
-  assertCaptured "Resolving node version 12.x"
-  assertCaptured "Downloading and installing node 12."
+  assertCaptured "Resolving node version 14.x"
+  assertCaptured "Downloading and installing node 14."
   assertCapturedSuccess
 }
 
@@ -241,14 +270,11 @@ testYarnNativeCacheFalse() {
   compile "yarn-native-cache-false" $cache
   # These will be created if yarn is using the directory for its cache
 
-  ls "$cache"
-
   # Run this again with a cache
   compile "yarn-native-cache-false" $cache
 
   # assert that devDependencies are not cached
   assertEquals "1" "$(ls -1 $cache/node/cache/node_modules | grep -c debug | tr -d ' ')"
-  assertCaptured "Using Yarn Cache has moved behind an environment variable."
   assertCapturedSuccess
 }
 
@@ -878,8 +904,10 @@ testDynamicProcfile() {
 testEnvVars() {
   env_dir=$(mktmpdir)
   echo "false" > $env_dir/NPM_CONFIG_PRODUCTION
+  echo "true" > $env_dir/USE_NPM_INSTALL
   compile "stable-node" "$(mktmpdir)" $env_dir
   assertCaptured "NPM_CONFIG_PRODUCTION=false"
+  assertCaptured "USE_NPM_INSTALL=true"
   assertCapturedSuccess
 }
 
@@ -1263,8 +1291,8 @@ testBuildMetaData() {
   assertFileContains "save-cache-time=" $log_file
 
   # resolve-version tests
-  assertFileContains 'resolve-v1-node="10.23.0 https://s3.amazonaws.com/heroku-nodebin/node/release/linux-x64/node-v10.23.0-linux-x64.tar.gz"' $log_file
-  assertFileContains 'resolve-v2-node="10.23.0 https://s3.amazonaws.com/heroku-nodebin/node/release/linux-x64/node-v10.23.0-linux-x64.tar.gz"' $log_file
+  assertFileContains 'resolve-v1-node="10.23.1 https://s3.amazonaws.com/heroku-nodebin/node/release/linux-x64/node-v10.23.1-linux-x64.tar.gz"' $log_file
+  assertFileContains 'resolve-v2-node="10.23.1 https://s3.amazonaws.com/heroku-nodebin/node/release/linux-x64/node-v10.23.1-linux-x64.tar.gz"' $log_file
   assertFileContains "resolve-is-equal-node=true" $log_file
 
   # erase the log file

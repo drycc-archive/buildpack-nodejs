@@ -1,6 +1,25 @@
 # Node.js Buildpack Changelog
 
 ## main
+- Update node version to 14 ([#885](https://github.com/heroku/heroku-buildpack-nodejs/pull/885))
+- Add unit tests around the behavior of `WEB_CONCURRENCY` ([#876](https://github.com/heroku/heroku-buildpack-nodejs/pull/876))
+
+## v182 (2020-01-05)
+- add Node 14.15.3 and 15.5.0 to inventory ([#881](https://github.com/heroku/heroku-buildpack-nodejs/pull/881))
+- Report on parsing errors for `resolve-version.rs` ([#883](https://github.com/heroku/heroku-buildpack-nodejs/pull/883))
+- Add an environment variable for using npm install (instead of npm ci) ([#882](https://github.com/heroku/heroku-buildpack-nodejs/pull/882))
+- add Node 10.23.1, 12.20.1, 14.15.4, and 15.5.1 to inventory ([#886](https://github.com/heroku/heroku-buildpack-nodejs/pull/886))
+
+## v181 (2020-12-16)
+- Warn to use build flag with ng build as build script ([#878](https://github.com/heroku/heroku-buildpack-nodejs/pull/878))
+- add Node 14.15.2 to inventory ([#879](https://github.com/heroku/heroku-buildpack-nodejs/pull/879))
+
+## v180 (2020-12-09)
+- add Node 15.4.0 to inventory ([#873](https://github.com/heroku/heroku-buildpack-nodejs/pull/873))
+
+## v179 (2020-12-07)
+- Fix syntax for passing in script flags for npm build script ([#869](https://github.com/heroku/heroku-buildpack-nodejs/pull/869))
+- add Node 15.3.0 and 12.20.0 to inventory ([#870](https://github.com/heroku/heroku-buildpack-nodejs/pull/870))
 
 ## v178 (2020-11-17)
 - Add NODE_BUILD_FLAG env var ([#859](https://github.com/heroku/heroku-buildpack-nodejs/pull/859))
